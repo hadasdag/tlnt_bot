@@ -22,8 +22,8 @@ app.get('/', function (req, res) {
       response.on('data', (d) => {
         console.log('@@@000', d);
         xml += d;
+        process.stdout.write(d);
       });
-      console.log('@@@111', xml);
       //xml2js.parseString(xml, function (err, parsedXml) {
       //  res.send(parsedXml);
       //});
