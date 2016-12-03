@@ -11,24 +11,10 @@ app.listen((process.env.PORT || 3000));
 
 // Server frontpage
 app.get('/', function (req, res) {
-    var options = {
-      host: 'drive.google.com',
-      port: 443,
-      path: '/uc?export=download&id=0B0Jkuy0hWLAMMU1RMmJHNUgyMHM'
-    };
-    var blabla = 'asdadas';
-    https.get(options, function(response) {
-      xml = '';
-      response.on('data', (d) => {
-        console.log('@@@000', d);
-        xml += d;
-        process.stdout.write(d);
-      });
-      //xml2js.parseString(xml, function (err, parsedXml) {
-      //  res.send(parsedXml);
-      //});
-    });     
-    res.send(blabla);
+    request.get('https://drive.google.com/uc?export=download&id=0B0Jkuy0hWLAMMU1RMmJHNUgyMHM', function (error, response, body) {
+      res.send(body);
+    });   
+    res.send(':-(');
 });
 
 // handler receiving messages
