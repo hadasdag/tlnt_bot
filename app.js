@@ -2,6 +2,8 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var request = require('request');
 var app = express();
+var xml2js = require('xml2js');
+const https = require('https');
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -9,12 +11,19 @@ app.listen((process.env.PORT || 3000));
 
 // Server frontpage
 app.get('/', function (req, res) {
-    res.send('BOBO <3 <3');
-    var parseString = require('xml2js').parseString;
-    var xml = "<root>Hello xml2js!</root>"
-    parseString(xml, function (err, result) {
-        console.dir(result);
-    });    
+    var options = {
+      host: 'drive.google.com',
+      port: 80,
+      path: '/open?id=0B0Jkuy0hWLAMMU1RMmJHNUgyMHM'
+    };
+
+    https.get(options, function(res) {
+      xml2js.parseString(res, function (err, result) {
+        res.send(result);
+      });
+    }).on('error', function(e) {
+      console.log("Got error: " + e.message);
+    });        
 });
 
 // handler receiving messages
