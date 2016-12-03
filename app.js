@@ -3,7 +3,7 @@ var bodyParser = require('body-parser');
 var request = require('request');
 var app = express();
 var xml2js = require('xml2js');
-const https = require('https');
+var https = require('https');
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -16,16 +16,13 @@ app.get('/', function (req, res) {
       port: 80,
       path: '/uc?export=download&id=0B0Jkuy0hWLAMMU1RMmJHNUgyMHM'
     };
-
+    console.log('@@@000', options);  
     https.get(options, function(xml) {
       console.log('@@@111', xml);
-      xml2js.parseString(xml, function (err, parsedXml) {
-        res.send(parsedXml);
-      });
-    }).on('error', function(e) {
-      console.log("Got error: " + e.message);
-      res.send(e.message);
-    });      
+      //xml2js.parseString(xml, function (err, parsedXml) {
+      //  res.send(parsedXml);
+      //});
+    });     
     res.send(':-(');
 });
 
