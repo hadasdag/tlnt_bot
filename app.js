@@ -7,7 +7,7 @@ var xml2js = require('xml2js');
 
 request.get('https://drive.google.com/uc?export=download&id=0B0Jkuy0hWLAMMU1RMmJHNUgyMHM', function (error, response, body) {
   console.log(body);
-  global.xml = body;
+  //global.xml = body;
 });
 
 app.use(bodyParser.urlencoded({extended: false}));
