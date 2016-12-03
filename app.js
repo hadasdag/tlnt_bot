@@ -17,9 +17,13 @@ app.get('/', function (req, res) {
       path: '/uc?export=download&id=0B0Jkuy0hWLAMMU1RMmJHNUgyMHM'
     };
     var blabla = 'asdadas';
-    https.get(options, function(xml) {
+    https.get(options, function(response) {
+      xml = '';
+      response.on('data', (d) => {
+        console.log('@@@000', d);
+        xml .= d;
+      });
       console.log('@@@111', xml);
-      blabla = xml;
       //xml2js.parseString(xml, function (err, parsedXml) {
       //  res.send(parsedXml);
       //});
