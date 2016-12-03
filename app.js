@@ -18,6 +18,7 @@ app.get('/', function (req, res) {
     };
 
     https.get(options, function(res) {
+      console.log('@@@111', res);
       xml2js.parseString(res, function (err, result) {
         res.send(result);
       });
