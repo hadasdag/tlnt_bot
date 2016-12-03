@@ -23,7 +23,9 @@ app.get('/', function (req, res) {
       });
     }).on('error', function(e) {
       console.log("Got error: " + e.message);
-    });        
+      res.send(e.message);
+    });      
+    res.send(':-(');
 });
 
 // handler receiving messages
