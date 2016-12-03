@@ -17,10 +17,10 @@ app.get('/', function (req, res) {
       path: '/uc?export=download&id=0B0Jkuy0hWLAMMU1RMmJHNUgyMHM'
     };
 
-    https.get(options, function(res) {
-      console.log('@@@111', res);
-      xml2js.parseString(res, function (err, result) {
-        res.send(result);
+    https.get(options, function(xml) {
+      console.log('@@@111', xml);
+      xml2js.parseString(xml, function (err, parsedXml) {
+        res.send(parsedXml);
       });
     }).on('error', function(e) {
       console.log("Got error: " + e.message);
