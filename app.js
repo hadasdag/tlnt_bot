@@ -8,9 +8,14 @@ var https = require('https');
 request.get('https://drive.google.com/uc?export=download&id=0B0Jkuy0hWLAMMU1RMmJHNUgyMHM', function (error, response, body) {
   console.log(body);
   global.xml = body;
-});
-xml2js.parseString(global.xml, function(err, parsedResult) {
-  global.parsedResult = JSON.stringify(parsedResult);
+  xml2js.parseString(global.xml, function(err, parsedResult) {
+    if (err) {
+      console.log('000', err);
+    }
+    global.parsedResult = parsedResult;    
+    console.log('111', global.parsedResult);
+    console.log('222', JSON.stringify(global.parsedResult));    
+  });  
 });
 
 app.use(bodyParser.urlencoded({extended: false}));
@@ -24,7 +29,6 @@ app.get('/', function (req, res) {
 
 // handler receiving messages
 app.post('/webhook', function (req, res) {
-    console.log('@@@', req.body);  
     var events = req.body.entry[0].messaging;
     for (i = 0; i < events.length; i++) {
         var event = events[i];
@@ -37,7 +41,6 @@ app.post('/webhook', function (req, res) {
 
 // generic function sending messages
 function sendMessage(recipientId, message) {
-    console.log('@@@', recipientId, message);
     request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
         qs: {access_token: process.env.PAGE_ACCESS_TOKEN},
