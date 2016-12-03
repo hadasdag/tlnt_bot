@@ -12,18 +12,26 @@ app.listen((process.env.PORT || 3000));
 // Server frontpage
 app.get('/', function (req, res) {
     request.get('https://drive.google.com/uc?export=download&id=0B0Jkuy0hWLAMdk1SUk54VUJzMm8', function (error, response, body) {
-      console.log(body);
-      global.xml = body;
-      xml2js.parseString(global.xml, function(err, parsedResult) {
+      xml2js.parseString(body, function(err, parsedResult) {
         if (err) {
-          console.log('000', err);
+          console.log('Error: ', err);
         }
-        global.parsedResult = parsedResult;    
-        console.log('111', global.parsedResult);
-        console.log('222', JSON.stringify(global.parsedResult));    
+        var treeRoot = parsedResult.mxGraphModel.root[0].mxCell;
+        nodes = {};
+        edges = {};
+        for (var i = 0, len = treeRoot.length; i < len; i++) {
+          var node = treeRoot[i].$;
+          if (typeof node.value !== 'undefined') { // node
+            nodes[node.id] = node.value;
+          } else if (typeof node.source !== 'undefined') { // edge
+            edges[node.source] = node.target;
+          }
+          console.log('NODES ', nodes);
+          console.log('EDGES ', edges);
+        }
       });  
     });  
-    res.send(JSON.stringify(global.parsedResult));
+    res.send(':-)');
 });
 
 // handler receiving messages
