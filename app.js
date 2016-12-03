@@ -9,6 +9,10 @@ request.get('https://drive.google.com/uc?export=download&id=0B0Jkuy0hWLAMMU1RMmJ
   console.log(body);
   global.xml = body;
 });
+xml2js.parseString(global.xml, function(err, parsedResult) {
+  global.parsedResult = JSON.stringify(parsedResult);
+  console.log(util.inspect(parsedResult, false, null));
+});
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -16,6 +20,7 @@ app.listen((process.env.PORT || 3000));
 
 // Server frontpage
 app.get('/', function (req, res) {
+
     res.send(JSON.stringify(global.xml));
 });
 
