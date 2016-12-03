@@ -5,25 +5,24 @@ var app = express();
 var xml2js = require('xml2js');
 var https = require('https');
 
-request.get('https://drive.google.com/uc?export=download&id=0B0Jkuy0hWLAMMU1RMmJHNUgyMHM', function (error, response, body) {
-  console.log(body);
-  global.xml = body;
-  xml2js.parseString(global.xml, function(err, parsedResult) {
-    if (err) {
-      console.log('000', err);
-    }
-    global.parsedResult = parsedResult;    
-    console.log('111', global.parsedResult);
-    console.log('222', JSON.stringify(global.parsedResult));    
-  });  
-});
-
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.listen((process.env.PORT || 3000));
 
 // Server frontpage
 app.get('/', function (req, res) {
+    request.get('https://drive.google.com/uc?export=download&id=0B0Jkuy0hWLAMdk1SUk54VUJzMm8', function (error, response, body) {
+      console.log(body);
+      global.xml = body;
+      xml2js.parseString(global.xml, function(err, parsedResult) {
+        if (err) {
+          console.log('000', err);
+        }
+        global.parsedResult = parsedResult;    
+        console.log('111', global.parsedResult);
+        console.log('222', JSON.stringify(global.parsedResult));    
+      });  
+    });  
     res.send(JSON.stringify(global.parsedResult));
 });
 
