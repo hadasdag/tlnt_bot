@@ -21,7 +21,7 @@ app.get('/', function (req, res) {
       xml = '';
       response.on('data', (d) => {
         console.log('@@@000', d);
-        xml .= d;
+        xml += d;
       });
       console.log('@@@111', xml);
       //xml2js.parseString(xml, function (err, parsedXml) {
