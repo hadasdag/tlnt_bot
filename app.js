@@ -2,6 +2,8 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var request = require('request');
 var app = express();
+var parseString = require('xml2js').parseString;
+var xml = "<root>Hello xml2js!</root>"
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -18,7 +20,9 @@ app.post('/webhook', function (req, res) {
     for (i = 0; i < events.length; i++) {
         var event = events[i];
         if (event.message && event.message.text) {
-            sendMessage(event.sender.id, {text: "Echo: " + event.message.text});
+          parseString(xml, function (err, result) {
+            sendMessage(event.sender.id, {text: result});
+          });
         }
     }
     res.sendStatus(200);
