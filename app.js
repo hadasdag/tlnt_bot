@@ -13,17 +13,18 @@ app.listen((process.env.PORT || 3000));
 app.get('/', function (req, res) {
     var options = {
       host: 'drive.google.com',
-      port: 80,
+      port: 443,
       path: '/uc?export=download&id=0B0Jkuy0hWLAMMU1RMmJHNUgyMHM'
     };
-    console.log('@@@000', options);  
+    var blabla = 'asdadas';
     https.get(options, function(xml) {
       console.log('@@@111', xml);
+      blabla = xml;
       //xml2js.parseString(xml, function (err, parsedXml) {
       //  res.send(parsedXml);
       //});
     });     
-    res.send(':-(');
+    res.send(blabla);
 });
 
 // handler receiving messages
