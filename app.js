@@ -16,7 +16,7 @@ app.listen((process.env.PORT || 3000));
 
 // Server frontpage
 app.get('/', function (req, res) {
-    res.send(global.xml);
+    res.send(JSON.stringify(global.xml));
 });
 
 // handler receiving messages
