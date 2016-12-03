@@ -11,7 +11,7 @@ app.listen((process.env.PORT || 3000));
 
 // Server frontpage
 app.get('/', function (req, res) {
-    request.get('https://drive.google.com/uc?export=download&id=0B0Jkuy0hWLAMdk1SUk54VUJzMm8', function (error, response, body) {
+    request.get('https://drive.google.com/uc?export=download&id=0B0Jkuy0hWLAMVEtFZFUxd0x4ZnM', function (error, response, body) {
       xml2js.parseString(body, function(err, parsedResult) {
         if (err) {
           console.log('Error: ', err);
