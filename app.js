@@ -24,11 +24,12 @@ app.get('/', function (req, res) {
           if (typeof node.value !== 'undefined') { // node
             nodes[node.id] = node.value;
           } else if (typeof node.source !== 'undefined') { // edge
-            edges[node.source] = node.target;
+            edges[node.source] = edges[node.source] || [];
+            edges[node.source].push(node.target);
           }
-          console.log('NODES ', nodes);
-          console.log('EDGES ', edges);
         }
+        console.log('NODES ', nodes);
+        console.log('EDGES ', edges);        
       });  
     });  
     res.send(':-)');
