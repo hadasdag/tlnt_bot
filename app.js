@@ -12,7 +12,7 @@ app.listen((process.env.PORT || 3000));
 // Server frontpage
 app.get('/', function (req, res) {
     request.get('https://drive.google.com/uc?export=download&id=0B0Jkuy0hWLAMMU1RMmJHNUgyMHM', function (error, response, body) {
-      res.send(body);
+      console.log(body);
     });   
     res.send(':-(');
 });
