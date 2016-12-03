@@ -4,6 +4,12 @@ var request = require('request');
 var app = express();
 var xml2js = require('xml2js');
 var https = require('https');
+var xml = '';
+
+request.get('https://drive.google.com/uc?export=download&id=0B0Jkuy0hWLAMMU1RMmJHNUgyMHM', function (error, response, body) {
+  console.log(body);
+  xml = body;
+});
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -11,10 +17,7 @@ app.listen((process.env.PORT || 3000));
 
 // Server frontpage
 app.get('/', function (req, res) {
-    request.get('https://drive.google.com/uc?export=download&id=0B0Jkuy0hWLAMMU1RMmJHNUgyMHM', function (error, response, body) {
-      console.log(body);
-    });   
-    res.send(':-(');
+    res.send(xml);
 });
 
 // handler receiving messages
