@@ -14,7 +14,7 @@ app.get('/', function (req, res) {
     var options = {
       host: 'drive.google.com',
       port: 80,
-      path: '/open?id=0B0Jkuy0hWLAMMU1RMmJHNUgyMHM'
+      path: '/uc?export=download&id=0B0Jkuy0hWLAMMU1RMmJHNUgyMHM'
     };
 
     https.get(options, function(res) {

@@ -19,6 +19,8 @@
     "config": "^1.20.4",
     "ejs": "^2.4.2",
     "express": "^4.13.4",
+    "google-auth-library": "^0.9.10",
+    "googleapis": "^14.2.0",
     "request": "^2.72.0",
     "xml2js": "^0.4.17"
   },
