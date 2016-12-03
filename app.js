@@ -10,6 +10,11 @@ app.listen((process.env.PORT || 3000));
 // Server frontpage
 app.get('/', function (req, res) {
     res.send('BOBO <3 <3');
+    var parseString = require('xml2js').parseString;
+    var xml = "<root>Hello xml2js!</root>"
+    parseString(xml, function (err, result) {
+        console.dir(result);
+    });    
 });
 
 // handler receiving messages
