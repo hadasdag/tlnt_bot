@@ -35,12 +35,12 @@ app.post('/webhook', function (req, res) {
             sendQuickReply(event.sender.id, vertices[userIdToVertexId[event.sender.id]]);            
           } else {
             previousVertex = vertices[userIdToVertexId[event.sender.id]];
-            answerVertex = previousVertex.childs[event.message.text];
-            if (!answerVertex.childs) {
+            answerVertex = previousVertex.children[event.message.text];
+            if (!answerVertex.children) {
               sendMessage(event.sender.id, {text: 'Thanks and bye bye!'});
               userIdToVertexId[event.sender.id] = 1;
             } else {
-              nextQuestionVertex = answerVertex.childs[Object.keys(answerVertex.childs)[0]];
+              nextQuestionVertex = answerVertex.children[Object.keys(answerVertex.children)[0]];
               userIdToVertexId[event.sender.id] = nextQuestionVertex.id;
               sendMessage(event.sender.id, {text: nextQuestionVertex.value});
               sendQuickReply(event.sender.id, vertices[userIdToVertexId[event.sender.id]]);            
@@ -53,6 +53,7 @@ app.post('/webhook', function (req, res) {
 
 // generic function sending messages
 function sendMessage(recipientId, message) {
+    console.log(recipientId, message);
     request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
         qs: {access_token: process.env.PAGE_ACCESS_TOKEN},
@@ -72,8 +73,8 @@ function sendMessage(recipientId, message) {
 
 function sendQuickReply(recipientId, currentVertex) {
   quick_replies = [];
-  for (index in currentVertex.childs) {
-    child = currentVertex[index];
+  for (index in currentVertex.children) {
+    child = currentVertex.children[index];
     quick_replies.push({title: child.value, content_type: 'text', payload: index});
   }
   var message = {
@@ -103,7 +104,7 @@ function parseTree() {
             vertex.type = 'QUESTION';
           }
           vertex.value = node.value;
-          vertex.childs = [];
+          vertex.children = [];
           vertex.id = node.id;
           vertices[node.id] = vertex;
         } else if (typeof node.source !== 'undefined') { // edge
@@ -115,13 +116,13 @@ function parseTree() {
       for (source in edges) {
         for (var i = edges[source].length - 1; i >= 0; i--) {
           target = vertices[edges[source][i]];
-          vertices[source].childs[target.value] = target;
+          vertices[source].children[target.value] = target;
         }
       }
 
       for (id in vertices) {
         vertex = vertices[id];
-        console.log(id, vertex.value, vertex.type, vertex.childs);
+        console.log(id, vertex.value, vertex.type, vertex.children);
       }
     });  
   });  
