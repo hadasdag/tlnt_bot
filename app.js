@@ -51,7 +51,7 @@ function sendMessage(recipientId, message) {
 };
 
 function sendQuickReply(recipientId) {
-  var message: {
+  var message = {
     text: "What's your favorite movie genre?",
     quick_replies: [
       {
