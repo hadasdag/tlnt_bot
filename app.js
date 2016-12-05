@@ -39,14 +39,12 @@ app.post('/webhook', function (req, res) {
             if (typeof answerVertex == 'undefined') {
               console.log('Previous vertex: ', previousVertex);
               sendMessage(event.sender.id, {text: 'Unknown answer ' + event.message.text + ' - Try again!'});              
-            } else if (typeof answerVertex.children == 'undefined' || !answerVertex.children) {
+            } else if (answerVertex.children.length == 0) {
               sendMessage(event.sender.id, {text: 'Thanks and bye bye!'});
               userIdToVertexId[event.sender.id] = 1;
             } else {
-              console.log('!!!!!!@@@@', Object.keys(answerVertex.children), answerVertex.children);
               nextQuestionVertex = answerVertex.children[Object.keys(answerVertex.children)[0]];
               userIdToVertexId[event.sender.id] = nextQuestionVertex.id;
-              sendMessage(event.sender.id, {text: nextQuestionVertex.value});
               sendQuickReply(event.sender.id, vertices[userIdToVertexId[event.sender.id]]);            
             }
           }
