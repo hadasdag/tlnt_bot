@@ -88,6 +88,7 @@ function sendQuickReply(recipientId, currentVertex) {
 }
 
 function parseTree() {
+  console.log('INFO: Starting to parse tree');
   request.get('https://drive.google.com/uc?export=download&id=0B0Jkuy0hWLAMYTNnQ2NjN3o2WUU', function (error, response, body) {
     xml2js.parseString(body, function(err, parsedResult) {
       if (err) {
@@ -121,6 +122,8 @@ function parseTree() {
           vertices[source].children[target.value] = target;
         }
       }
+
+      console.log('INFO: Finished parsing tree');
     });  
   });  
 }
