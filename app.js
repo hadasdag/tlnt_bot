@@ -13,48 +13,13 @@ app.listen((process.env.PORT || 3000));
 
 // Server frontpage
 app.get('/', function (req, res) {
-    request.get('https://drive.google.com/uc?export=download&id=0B0Jkuy0hWLAMVEtFZFUxd0x4ZnM', function (error, response, body) {
-      xml2js.parseString(body, function(err, parsedResult) {
-        if (err) {
-          console.log('Error: ', err);
-        }
-        var treeRoot = parsedResult.mxGraphModel.root[0].mxCell;
-        vertices = {};
-        edges = {};
-        for (var i = 0, len = treeRoot.length; i < len; i++) {
-          var node = treeRoot[i].$;
-          var vertex = {};
-          if (typeof node.value !== 'undefined') { // node
-            if (node.style.indexOf('ellipse')) {
-              vertex.type = 'ANSWER';
-            } else {
-              vertex.type = 'QUESTION';
-            }
-            vertex.value = nodes.value;
-            vertex.childs = {};
-            vertices[node.id] = vertex;
-          } else if (typeof node.source !== 'undefined') { // edge
-            edges[node.source] = edges[node.source] || [];
-            edges[node.source].push(node.target);
-          }
-        }
-
-        for (source in edges) {
-          target = edges[source];
-          vertices[source].childs.push(vertices.target);
-        }
-
-        for (id in vertices) {
-          vertex = vertices[id];
-          console.log(id, vertex.value, vertex.type, vertex.childs.map(v => v.value));
-        }
-      });  
-    });  
+    parseTree();  
     res.send(':-)');
 });
 
 // handler receiving messages
 app.post('/webhook', function (req, res) {
+    this.vertices || parseTree();
     var events = req.body.entry[0].messaging;
     for (i = 0; i < events.length; i++) {
         var event = events[i];
@@ -84,24 +49,47 @@ function sendMessage(recipientId, message) {
     });
 };
 
-request.get('https://drive.google.com/uc?export=download&id=0B0Jkuy0hWLAMVEtFZFUxd0x4ZnM', function (error, response, body) {
-  xml2js.parseString(body, function(err, parsedResult) {
-    if (err) {
-      console.log('Error: ', err);
-    }
-    var treeRoot = parsedResult.mxGraphModel.root[0].mxCell;
-    nodes = {};
-    edges = {};
-    for (var i = 0, len = treeRoot.length; i < len; i++) {
-      var node = treeRoot[i].$;
-      if (typeof node.value !== 'undefined') { // node
-        nodes[node.id] = node.value;
-      } else if (typeof node.source !== 'undefined') { // edge
-        edges[node.source] = edges[node.source] || [];
-        edges[node.source].push(node.target);
+function parseTree() {
+  request.get('https://drive.google.com/uc?export=download&id=0B0Jkuy0hWLAMVEtFZFUxd0x4ZnM', function (error, response, body) {
+    xml2js.parseString(body, function(err, parsedResult) {
+      if (err) {
+        console.log('Error: ', err);
       }
-    }
-    console.log('NODES ', nodes);
-    console.log('EDGES ', edges);        
+      var treeRoot = parsedResult.mxGraphModel.root[0].mxCell;
+      this.vertices = {};
+      this.edges = {};
+      for (var i = 0, len = treeRoot.length; i < len; i++) {
+        var node = treeRoot[i].$;
+        var vertex = {};
+        if (typeof node.value !== 'undefined') { // node
+          if (node.style.indexOf('ellipse') !== -1) {
+            vertex.type = 'ANSWER';
+          } else {
+            vertex.type = 'QUESTION';
+          }
+          vertex.value = node.value;
+          vertex.childs = [];
+          vertices[node.id] = vertex;
+        } else if (typeof node.source !== 'undefined') { // edge
+          edges[node.source] = edges[node.source] || [];
+          edges[node.source].push(node.target);
+        }
+      }
+
+      for (source in edges) {
+        for (var i = edges[source].length - 1; i >= 0; i--) {
+          target = vertices[edges[source][i]];
+          vertices[source].childs[target.value] = target;
+        }
+      }
+
+      for (id in vertices) {
+        vertex = vertices[id];
+        console.log(id, vertex.value, vertex.type, vertex.childs);
+      }
+    });  
   });  
-});  
+}
+
+parseTree();
+return;
