@@ -81,7 +81,7 @@ function sendQuickReply(recipientId, currentVertex) {
     quick_replies.push({title: child.value, content_type: 'text', payload: index});
   }
   var message = {
-    text: "What's your favorite movie genre?",
+    text: currentVertex.value,
     quick_replies: quick_replies
   };
 
