@@ -28,19 +28,19 @@ app.post('/webhook', function (req, res) {
         var event = events[i];
         if (event.message) {
           if (userIdToVertexId[event.sender.id] <= 1) {
-            sendMessage(event.sender.id, 'Hello! Welcome to BOBO\'s chatbot!');
+            sendMessage(event.sender.id, {text: 'Hello! Welcome to BOBO\'s chatbot!'});
             userIdToVertexId[event.sender.id] = Object.keys(vertices)[0];
             sendQuickReply(event.sender.id, vertices[userIdToVertexId[event.sender.id]]);            
           } else {
             previousVertex = vertices[userIdToVertexId[event.sender.id]];
             answerVertex = previousVertex.childs[event.message.text];
             if (!answerVertex.childs) {
-              sendMessage(event.sender.id, 'Thanks and bye bye!');
+              sendMessage(event.sender.id, {text: 'Thanks and bye bye!'});
               userIdToVertexId[event.sender.id] = 1;
             } else {
               nextQuestionVertex = answerVertex.childs[Object.keys(answerVertex.childs)[0]];
               userIdToVertexId[event.sender.id] = nextQuestionVertex.id;
-              sendMessage(event.sender.id, nextQuestionVertex.value);
+              sendMessage(event.sender.id, {text: nextQuestionVertex.value});
               sendQuickReply(event.sender.id, vertices[userIdToVertexId[event.sender.id]]);            
             }
           }
@@ -70,28 +70,13 @@ function sendMessage(recipientId, message) {
 
 function sendQuickReply(recipientId, currentVertex) {
   quick_replies = [];
-  for (var i = currentVertex.childs.length - 1; i >= 0; i--) {
-    currentVertex.childs[i]
+  for (index in currentVertex.childs) {
+    child = currentVertex[index];
+    quick_replies.push({title: child.value, content_type: 'text', payload: index});
   }
   var message = {
     text: "What's your favorite movie genre?",
-    quick_replies: [
-      {
-        "content_type":"text",
-        "title":"Action",
-        "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_ACTION"
-      },
-      {
-        "content_type":"text",
-        "title":"Comedy",
-        "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_COMEDY"
-      },
-      {
-        "content_type":"text",
-        "title":"Drama",
-        "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_DRAMA"
-      }
-    ]
+    quick_replies: quick_replies
   };
 
   sendMessage(recipientId, message);
