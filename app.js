@@ -24,6 +24,7 @@ app.post('/webhook', function (req, res) {
     this.vertices || parseTree();
     var events = req.body.entry[0].messaging;
     for (i = 0; i < events.length; i++) {
+        console.log('@@@', event.sender.id);
         var event = events[i];
         if (!userIdToVertexId[event.sender.id]) {
           userIdToVertexId[event.sender.id] = 1;
@@ -118,11 +119,6 @@ function parseTree() {
           target = vertices[edges[source][i]];
           vertices[source].children[target.value] = target;
         }
-      }
-
-      for (id in vertices) {
-        vertex = vertices[id];
-        console.log(id, vertex.value, vertex.type, vertex.children);
       }
     });  
   });  
