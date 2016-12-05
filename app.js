@@ -46,7 +46,7 @@ app.get('/', function (req, res) {
 
         for (id in vertices) {
           vertex = vertices[id];
-          console.log(id, vertex.value, vertex.type, vertex.childs.map(v ==> v.value));
+          console.log(id, vertex.value, vertex.type, vertex.childs.map(v => v.value));
         }
       });  
     });  
