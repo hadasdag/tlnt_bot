@@ -4,6 +4,8 @@ var request = require('request');
 var app = express();
 var xml2js = require('xml2js');
 var https = require('https');
+var Buffer = require('buffer').Buffer;
+var pako = require('pako');
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -17,19 +19,35 @@ app.get('/', function (req, res) {
           console.log('Error: ', err);
         }
         var treeRoot = parsedResult.mxGraphModel.root[0].mxCell;
-        nodes = {};
+        vertices = {};
         edges = {};
         for (var i = 0, len = treeRoot.length; i < len; i++) {
           var node = treeRoot[i].$;
+          var vertex = {};
           if (typeof node.value !== 'undefined') { // node
-            nodes[node.id] = node.value;
+            if (node.style.indexOf('ellipse')) {
+              vertex.type = 'ANSWER';
+            } else {
+              vertex.type = 'QUESTION';
+            }
+            vertex.value = nodes.value;
+            vertex.childs = {};
+            vertices[node.id] = vertex;
           } else if (typeof node.source !== 'undefined') { // edge
             edges[node.source] = edges[node.source] || [];
             edges[node.source].push(node.target);
           }
         }
-        console.log('NODES ', nodes);
-        console.log('EDGES ', edges);        
+
+        for (source in edges) {
+          target = edges[source];
+          vertices[source].childs.push(vertices.target);
+        }
+
+        for (id in vertices) {
+          vertex = vertices[id];
+          console.log(id, vertex.value, vertex.type, vertex.childs.map(v ==> v.value));
+        }
       });  
     });  
     res.send(':-)');
@@ -65,3 +83,25 @@ function sendMessage(recipientId, message) {
         }
     });
 };
+
+request.get('https://drive.google.com/uc?export=download&id=0B0Jkuy0hWLAMVEtFZFUxd0x4ZnM', function (error, response, body) {
+  xml2js.parseString(body, function(err, parsedResult) {
+    if (err) {
+      console.log('Error: ', err);
+    }
+    var treeRoot = parsedResult.mxGraphModel.root[0].mxCell;
+    nodes = {};
+    edges = {};
+    for (var i = 0, len = treeRoot.length; i < len; i++) {
+      var node = treeRoot[i].$;
+      if (typeof node.value !== 'undefined') { // node
+        nodes[node.id] = node.value;
+      } else if (typeof node.source !== 'undefined') { // edge
+        edges[node.source] = edges[node.source] || [];
+        edges[node.source].push(node.target);
+      }
+    }
+    console.log('NODES ', nodes);
+    console.log('EDGES ', edges);        
+  });  
+});  
