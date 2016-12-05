@@ -24,7 +24,9 @@ app.post('/webhook', function (req, res) {
     this.vertices || parseTree();
     var events = req.body.entry[0].messaging;
     for (i = 0; i < events.length; i++) {
-        userIdToVertexId[event.sender.id] || userIdToVertexId[event.sender.id] = 1;
+        if (!userIdToVertexId[event.sender.id]) {
+          userIdToVertexId[event.sender.id] = 1;
+        }
         var event = events[i];
         if (event.message) {
           if (userIdToVertexId[event.sender.id] <= 1) {
