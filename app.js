@@ -38,9 +38,8 @@ app.post('/webhook', function (req, res) {
             previousVertex = vertices[userIdToVertexId[event.sender.id]];
             answerVertex = previousVertex.children[event.message.text];
             if (typeof answerVertex == 'undefined') {
-              console.log('###', event.message.text, previousVertex);
-            }
-            if (typeof answerVertex.children == 'undefined') {
+              sendMessage(event.sender.id, {text: 'Unknown answer ' + event.message.text + ' - Thanks and bye bye!'});              
+            } else if (typeof answerVertex.children == 'undefined') {
               sendMessage(event.sender.id, {text: 'Thanks and bye bye!'});
               userIdToVertexId[event.sender.id] = 1;
             } else {
