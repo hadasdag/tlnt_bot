@@ -17,7 +17,7 @@ app.get('/', function (req, res) {
     res.send(':-)');
 });
 
-vat userIdToVertexId = {};
+var userIdToVertexId = {};
 
 // handler receiving messages
 app.post('/webhook', function (req, res) {
