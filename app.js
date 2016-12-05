@@ -17,15 +17,33 @@ app.get('/', function (req, res) {
     res.send(':-)');
 });
 
+vat userIdToVertexId = {};
+
 // handler receiving messages
 app.post('/webhook', function (req, res) {
     this.vertices || parseTree();
     var events = req.body.entry[0].messaging;
     for (i = 0; i < events.length; i++) {
+        userIdToVertexId[event.sender.id] || userIdToVertexId[event.sender.id] = 1;
         var event = events[i];
-
-        if (event.message && event.message.text) {
-            sendQuickReply(event.sender.id);
+        if (event.message) {
+          if (userIdToVertexId[event.sender.id] <= 1) {
+            sendMessage(event.sender.id, 'Hello! Welcome to BOBO\'s chatbot!');
+            userIdToVertexId[event.sender.id] = Object.keys(vertices)[0];
+            sendQuickReply(event.sender.id, vertices[userIdToVertexId[event.sender.id]]);            
+          } else {
+            previousVertex = vertices[userIdToVertexId[event.sender.id]];
+            answerVertex = previousVertex.childs[event.message.text];
+            if (!answerVertex.childs) {
+              sendMessage(event.sender.id, 'Thanks and bye bye!');
+              userIdToVertexId[event.sender.id] = 1;
+            } else {
+              nextQuestionVertex = answerVertex.childs[Object.keys(answerVertex.childs)[0]];
+              userIdToVertexId[event.sender.id] = nextQuestionVertex.id;
+              sendMessage(event.sender.id, nextQuestionVertex.value);
+              sendQuickReply(event.sender.id, vertices[userIdToVertexId[event.sender.id]]);            
+            }
+          }
         }
     }
     res.sendStatus(200);
@@ -50,7 +68,11 @@ function sendMessage(recipientId, message) {
     });
 };
 
-function sendQuickReply(recipientId) {
+function sendQuickReply(recipientId, currentVertex) {
+  quick_replies = [];
+  for (var i = currentVertex.childs.length - 1; i >= 0; i--) {
+    currentVertex.childs[i]
+  }
   var message = {
     text: "What's your favorite movie genre?",
     quick_replies: [
@@ -95,6 +117,7 @@ function parseTree() {
           }
           vertex.value = node.value;
           vertex.childs = [];
+          vertex.id = node.id;
           vertices[node.id] = vertex;
         } else if (typeof node.source !== 'undefined') { // edge
           edges[node.source] = edges[node.source] || [];
@@ -110,7 +133,6 @@ function parseTree() {
       }
 
       for (id in vertices) {
-        this.currentVertex = id;
         vertex = vertices[id];
         console.log(id, vertex.value, vertex.type, vertex.childs);
       }
