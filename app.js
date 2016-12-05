@@ -23,8 +23,9 @@ app.post('/webhook', function (req, res) {
     var events = req.body.entry[0].messaging;
     for (i = 0; i < events.length; i++) {
         var event = events[i];
+
         if (event.message && event.message.text) {
-            sendMessage(event.sender.id, {text: "Echo: " + event.message.text});
+            sendQuickReply(event.sender.id);
         }
     }
     res.sendStatus(200);
@@ -48,6 +49,31 @@ function sendMessage(recipientId, message) {
         }
     });
 };
+
+function sendQuickReply(recipientId) {
+  var message: {
+    text: "What's your favorite movie genre?",
+    quick_replies: [
+      {
+        "content_type":"text",
+        "title":"Action",
+        "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_ACTION"
+      },
+      {
+        "content_type":"text",
+        "title":"Comedy",
+        "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_COMEDY"
+      },
+      {
+        "content_type":"text",
+        "title":"Drama",
+        "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_DRAMA"
+      }
+    ]
+  };
+
+  sendMessage(recipientId, message);
+}
 
 function parseTree() {
   request.get('https://drive.google.com/uc?export=download&id=0B0Jkuy0hWLAMVEtFZFUxd0x4ZnM', function (error, response, body) {
@@ -84,6 +110,7 @@ function parseTree() {
       }
 
       for (id in vertices) {
+        this.currentVertex = id;
         vertex = vertices[id];
         console.log(id, vertex.value, vertex.type, vertex.childs);
       }
