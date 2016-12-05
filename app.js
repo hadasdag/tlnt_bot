@@ -25,11 +25,10 @@ app.post('/webhook', function (req, res) {
     var events = req.body.entry[0].messaging;
     for (i = 0; i < events.length; i++) {
         var event = events[i];
-        console.log('@@@', event.sender.id);        
         if (!userIdToVertexId[event.sender.id]) {
           userIdToVertexId[event.sender.id] = 1;
         }
-        if (event.message) {
+        if (event.message && event.message.text) {
           if (userIdToVertexId[event.sender.id] <= 1) {
             sendMessage(event.sender.id, {text: 'Hello! Welcome to BOBO\'s chatbot!'});
             userIdToVertexId[event.sender.id] = Object.keys(vertices)[0];
@@ -38,6 +37,7 @@ app.post('/webhook', function (req, res) {
             previousVertex = vertices[userIdToVertexId[event.sender.id]];
             answerVertex = previousVertex.children[event.message.text];
             if (typeof answerVertex == 'undefined') {
+              console.log('Previous vertex: ', previousVertex);
               sendMessage(event.sender.id, {text: 'Unknown answer ' + event.message.text + ' - Try again!'});              
             } else if (typeof answerVertex.children == 'undefined' || !answerVertex.children) {
               sendMessage(event.sender.id, {text: 'Thanks and bye bye!'});
