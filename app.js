@@ -6,6 +6,7 @@ var xml2js = require('xml2js');
 var https = require('https');
 var Buffer = require('buffer').Buffer;
 var pako = require('pako');
+var userIdToVertexId = {};
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -13,11 +14,10 @@ app.listen((process.env.PORT || 3000));
 
 // Server frontpage
 app.get('/', function (req, res) {
-    parseTree();  
+    parseTree();
+    userIdToVertexId = {};
     res.send(':-)');
 });
-
-var userIdToVertexId = {};
 
 // handler receiving messages
 app.post('/webhook', function (req, res) {
