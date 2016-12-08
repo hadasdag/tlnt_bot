@@ -56,7 +56,6 @@ app.post('/webhook', function (req, res) {
 
 // generic function sending messages
 function sendMessage(recipientId, message) {
-    console.log('%%%', process.env.PAGE_ACCESS_TOKEN);
     request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
         qs: {access_token: process.env.PAGE_ACCESS_TOKEN},
@@ -116,14 +115,14 @@ function parseTree() {
           edges[node.source].push(node.target);
         }
       }
-
+      console.log('INFO: edges: ', edges);
       for (source in edges) {
         for (var i = edges[source].length - 1; i >= 0; i--) {
           target = vertices[edges[source][i]];
           vertices[source].children[target.value] = target;
         }
       }
-
+      console.log('INFO: vertices: ', vertices);
       console.log('INFO: Finished parsing tree');
     });  
   });  
