@@ -123,9 +123,12 @@ function parseTree() {
           vertex.children = {};
           vertex.id = node.id;
           vertices[node.id] = vertex;
-        } else if (typeof node.source !== 'undefined') { // edge
-          edges[node.source] = edges[node.source] || [];
-          edges[node.source].push(node.target);
+        } else {
+          console.log('DEBUG: ', node);
+          if (typeof node.source !== 'undefined') { // edge
+            edges[node.source] = edges[node.source] || [];
+            edges[node.source].push(node.target);
+          }
         }
       }
       console.log('INFO: edges: ', edges);
