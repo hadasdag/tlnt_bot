@@ -31,7 +31,6 @@ app.post('/webhook', function (req, res) {
         if (event.message && event.message.text) {
           console.log('INFO: Incoming Message: ', event.message.text, event.sender.id, userIdToVertexId[event.sender.id]);
           if (userIdToVertexId[event.sender.id] <= 1) {
-            sendMessage(event.sender.id, {text: 'Hello! Welcome to BOBO\'s chatbot!'});
             userIdToVertexId[event.sender.id] = Object.keys(vertices)[0];
             sendQuickReply(event.sender.id, vertices[userIdToVertexId[event.sender.id]]);            
           } else {
