@@ -46,14 +46,20 @@ app.post('/webhook', function (req, res) {
             if (answerVertex.children.length == 0) {
               sendMessage(event.sender.id, {text: 'Thanks and bye bye!'});
               userIdToVertexId[event.sender.id] = 1;
+              res.sendStatus(200);
+              return;              
             } else {
               nextQuestionVertex = answerVertex.children[Object.keys(answerVertex.children)[0]];
               if (typeof nextQuestionVertex == 'undefined') {
+                userIdToVertexId[event.sender.id] = 1;                                
                 sendMessage(event.sender.id, {text: 'Thanks and bye bye!'});
-                userIdToVertexId[event.sender.id] = 1;                
+                res.sendStatus(200);
+                return;                
               }
               userIdToVertexId[event.sender.id] = nextQuestionVertex.id;
               sendQuickReply(event.sender.id, vertices[userIdToVertexId[event.sender.id]]);            
+              res.sendStatus(200);
+              return;              
             }
           }
         }
