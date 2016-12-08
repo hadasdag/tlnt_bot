@@ -110,7 +110,7 @@ function parseTree() {
             vertex.type = 'QUESTION';
           }
           vertex.value = node.value;
-          vertex.children = [];
+          vertex.children = {};
           vertex.id = node.id;
           vertices[node.id] = vertex;
         } else if (typeof node.source !== 'undefined') { // edge
