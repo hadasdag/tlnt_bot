@@ -48,6 +48,10 @@ app.post('/webhook', function (req, res) {
               userIdToVertexId[event.sender.id] = 1;
             } else {
               nextQuestionVertex = answerVertex.children[Object.keys(answerVertex.children)[0]];
+              if (typeof nextQuestionVertex == 'undefined') {
+                sendMessage(event.sender.id, {text: 'Thanks and bye bye!'});
+                userIdToVertexId[event.sender.id] = 1;                
+              }
               userIdToVertexId[event.sender.id] = nextQuestionVertex.id;
               sendQuickReply(event.sender.id, vertices[userIdToVertexId[event.sender.id]]);            
             }
