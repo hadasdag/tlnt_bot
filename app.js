@@ -42,7 +42,7 @@ app.post('/webhook', function (req, res) {
               return;
             }
             userIdToVertexId[event.sender.id] = answerVertex.id;
-            console.log('INFO: Handling the user\'s answer: ', answerVertex, answerVertex.children);
+            console.log('INFO: Handling the user\'s answer: ', answerVertex.value, answerVertex.id, answerVertex.children.length);
             if (answerVertex.children.length == 0) {
               sendMessage(event.sender.id, {text: 'Thanks and bye bye!'});
               userIdToVertexId[event.sender.id] = 1;
