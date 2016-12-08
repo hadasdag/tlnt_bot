@@ -29,16 +29,24 @@ app.post('/webhook', function (req, res) {
           userIdToVertexId[event.sender.id] = 1;
         }
         if (event.message && event.message.text) {
-          console.log('INFO: Incoming Message: ', event.message.text, event.sender.id, userIdToVertexId[event.sender.id]);
+          if (event.message.is_echo) {
+            res.sendStatus(200);
+            return;            
+          }
+          text = typeof event.message.quick_reply != 'undefined' && event.message.quick_reply.payload
+            ? event.message.quick_reply.payload
+            : event.message.text;
+
+          console.log('INFO: Incoming Message: ', text, event.sender.id, userIdToVertexId[event.sender.id]);
           if (userIdToVertexId[event.sender.id] <= 1) {
             userIdToVertexId[event.sender.id] = Object.keys(vertices)[0];
             sendQuickReply(event.sender.id, vertices[userIdToVertexId[event.sender.id]]);            
           } else {
             previousVertex = vertices[userIdToVertexId[event.sender.id]];
-            answerVertex = previousVertex.children[event.message.text];
+            answerVertex = previousVertex.children[text];
             if (typeof answerVertex == 'undefined') {
               console.log('DEBUG: Unknown answer: ', event.message);
-              sendMessage(event.sender.id, {text: 'Unknown answer ' + event.message.text + ' - Try again!'});
+              sendMessage(event.sender.id, {text: 'Unknown answer ' + text + ' - Try again!'});
               res.sendStatus(200);
               return;
             }
