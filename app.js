@@ -37,6 +37,7 @@ app.post('/webhook', function (req, res) {
             previousVertex = vertices[userIdToVertexId[event.sender.id]];
             answerVertex = previousVertex.children[event.message.text];
             if (typeof answerVertex == 'undefined') {
+              console.log('DEBUG: Unknown answer: ', event.message);
               sendMessage(event.sender.id, {text: 'Unknown answer ' + event.message.text + ' - Try again!'});
               res.sendStatus(200);
               return;
