@@ -37,9 +37,9 @@ app.post('/webhook', function (req, res) {
           } else {
             previousVertex = vertices[userIdToVertexId[event.sender.id]];
             answerVertex = previousVertex.children[event.message.text];
-            console.log('111', answerVertex);
+            userIdToVertexId[event.sender.id] = answerVertex.id;
+            console.log('INFO: Handling the user\'s answer: ', answerVertex, answerVertex.children);
             if (typeof answerVertex == 'undefined') {
-              console.log('Previous vertex: ', previousVertex);
               sendMessage(event.sender.id, {text: 'Unknown answer ' + event.message.text + ' - Try again!'});              
             } else if (answerVertex.children.length == 0) {
               sendMessage(event.sender.id, {text: 'Thanks and bye bye!'});
